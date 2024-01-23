@@ -1,14 +1,7 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import styles from './app.module.css';
-
-import NxWelcome from './nx-welcome';
+import { Authentication } from '@directorio/dashboard/authentication';
 
 export function App() {
-  return (
-    <div>
-      <NxWelcome title="dashboard" />
-    </div>
-  );
+  return <Authentication />;
 }
 
 export default App;
