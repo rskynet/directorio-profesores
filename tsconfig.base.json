@@ -17,7 +17,8 @@
     "paths": {
       "@directorio/dashboard/authentication": [
         "libs/dashboard/authentication/src/index.ts"
-      ]
+      ],
+      "@directorio/supabase-js": ["libs/shared/supabase/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
