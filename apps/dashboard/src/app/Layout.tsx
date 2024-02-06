@@ -2,7 +2,8 @@ import { supabase } from '@directorio/supabase-js';
 import { Dialog, Transition } from '@headlessui/react';
 import { Bars3Icon, PowerIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
-import { Fragment, PropsWithChildren, useEffect, useState } from 'react';
+import { Fragment, PropsWithChildren, useState } from 'react';
+import { NavLink } from 'react-router-dom';
 
 type NavigationObject = {
   name: string;
@@ -13,7 +14,6 @@ type NavigationObject = {
       titleId?: string | undefined;
     } & React.RefAttributes<SVGSVGElement>
   >;
-  current: boolean;
 };
 
 type TLayoutProps = {
@@ -101,26 +101,32 @@ export default function Layout({
                         <ul role="list" className="-mx-2 space-y-1">
                           {navigation.map((item) => (
                             <li key={item.name}>
-                              <a
-                                href={item.href}
-                                className={clsx(
-                                  item.current
-                                    ? 'bg-gray-50 text-indigo-600'
-                                    : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50',
-                                  'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
-                                )}
+                              <NavLink
+                                to={item.href}
+                                className={({ isActive }) =>
+                                  clsx(
+                                    isActive
+                                      ? 'bg-gray-50 text-indigo-600'
+                                      : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50',
+                                    'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
+                                  )
+                                }
                               >
-                                <item.icon
-                                  className={clsx(
-                                    item.current
-                                      ? 'text-indigo-600'
-                                      : 'text-gray-400 group-hover:text-indigo-600',
-                                    'h-6 w-6 shrink-0'
-                                  )}
-                                  aria-hidden="true"
-                                />
-                                {item.name}
-                              </a>
+                                {({ isActive }) => (
+                                  <>
+                                    <item.icon
+                                      className={clsx(
+                                        isActive
+                                          ? 'text-indigo-600'
+                                          : 'text-gray-400 group-hover:text-indigo-600',
+                                        'h-6 w-6 shrink-0'
+                                      )}
+                                      aria-hidden="true"
+                                    />
+                                    {item.name}
+                                  </>
+                                )}
+                              </NavLink>
                             </li>
                           ))}
                         </ul>
@@ -151,26 +157,32 @@ export default function Layout({
                 <ul role="list" className="-mx-2 space-y-1">
                   {navigation.map((item) => (
                     <li key={item.name}>
-                      <a
-                        href={item.href}
-                        className={clsx(
-                          item.current
-                            ? 'bg-gray-50 text-indigo-600'
-                            : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50',
-                          'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
-                        )}
+                      <NavLink
+                        to={item.href}
+                        className={({ isActive }) =>
+                          clsx(
+                            isActive
+                              ? 'bg-gray-50 text-indigo-600'
+                              : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50',
+                            'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
+                          )
+                        }
                       >
-                        <item.icon
-                          className={clsx(
-                            item.current
-                              ? 'text-indigo-600'
-                              : 'text-gray-400 group-hover:text-indigo-600',
-                            'h-6 w-6 shrink-0'
-                          )}
-                          aria-hidden="true"
-                        />
-                        {item.name}
-                      </a>
+                        {({ isActive }) => (
+                          <>
+                            <item.icon
+                              className={clsx(
+                                isActive
+                                  ? 'text-indigo-600'
+                                  : 'text-gray-400 group-hover:text-indigo-600',
+                                'h-6 w-6 shrink-0'
+                              )}
+                              aria-hidden="true"
+                            />
+                            {item.name}
+                          </>
+                        )}
+                      </NavLink>
                     </li>
                   ))}
                 </ul>

@@ -6,9 +6,12 @@ import { useEffect, useState } from 'react';
 import Directory from './Directory';
 import Layout from './Layout';
 
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import Account from './Account';
+
 const navigation = [
-  { name: 'Inicio', href: '#', icon: HomeIcon, current: true },
-  { name: 'Perfil', href: '#', icon: UserIcon, current: false },
+  { name: 'Inicio', href: '/', icon: HomeIcon },
+  { name: 'Perfil', href: '/perfil', icon: UserIcon },
 ];
 
 export function App() {
@@ -24,16 +27,35 @@ export function App() {
     });
   }, []);
 
-  return !session ? (
-    <Authentication />
-  ) : (
-    <Layout
-      navigation={navigation}
-      userEmail={session.user.email || 'Anonymous'}
-    >
-      <Directory key={session.user.id} session={session} />
-    </Layout>
-  );
+  if (!session) return <Authentication />;
+
+  const router = createBrowserRouter([
+    {
+      index: true,
+      path: '/',
+      element: (
+        <Layout
+          navigation={navigation}
+          userEmail={session.user.email || 'Anonymous'}
+        >
+          <Directory key={session?.user.id} session={session} />
+        </Layout>
+      ),
+    },
+    {
+      path: '/perfil',
+      element: (
+        <Layout
+          navigation={navigation}
+          userEmail={session.user.email || 'Anonymous'}
+        >
+          <Account key={session?.user.id} session={session} />
+        </Layout>
+      ),
+    },
+  ]);
+
+  return <RouterProvider router={router} />;
 }
 
 export default App;
