@@ -7,18 +7,22 @@ export interface AuthenticationProps {}
 export function Authentication(props: AuthenticationProps) {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     setLoading(true);
-    const { error } = await supabase.auth.signInWithOtp({ email });
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
     if (error) {
       alert(error.message);
-    } else {
-      alert('Check your email for the login link!');
     }
+
     setLoading(false);
   };
 
@@ -50,6 +54,17 @@ export function Authentication(props: AuthenticationProps) {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
+            <div className="mt-2">
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="password"
+                required
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
           </div>
 
           <div>
@@ -58,7 +73,7 @@ export function Authentication(props: AuthenticationProps) {
               type="submit"
               className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 disabled:bg-indigo-500 disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-              {loading ? <span>Loading</span> : <span>Send magic link</span>}
+              {loading ? <span>Loading</span> : <span>Sign in</span>}
             </button>
           </div>
         </form>
