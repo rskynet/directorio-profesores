@@ -1,14 +1,14 @@
 import { Authentication } from '@directorio/dashboard/authentication';
 import { supabase } from '@directorio/supabase-js';
-import { UserIcon } from '@heroicons/react/24/outline';
+import { HomeIcon, UserIcon } from '@heroicons/react/24/outline';
 import { Session } from '@supabase/supabase-js';
 import { useEffect, useState } from 'react';
-import Account from './Account';
+import Directory from './Directory';
 import Layout from './Layout';
 
 const navigation = [
-  // { name: 'Inicio', href: '#', icon: HomeIcon, current: true },
-  { name: 'Perfil', href: '#', icon: UserIcon, current: true },
+  { name: 'Inicio', href: '#', icon: HomeIcon, current: true },
+  { name: 'Perfil', href: '#', icon: UserIcon, current: false },
 ];
 
 export function App() {
@@ -31,7 +31,7 @@ export function App() {
       navigation={navigation}
       userEmail={session.user.email || 'Anonymous'}
     >
-      <Account key={session.user.id} session={session} />
+      <Directory key={session.user.id} session={session} />
     </Layout>
   );
 }
