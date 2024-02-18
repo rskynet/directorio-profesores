@@ -1,6 +1,8 @@
+/* eslint-disable no-empty-pattern */
 import { supabase } from '@directorio/supabase-js';
 import { Session } from '@supabase/supabase-js';
 import { useEffect, useState } from 'react';
+import { useDebounceValue } from './hooks/useDebounceValue';
 
 type TPeople = {
   first_name: string;
@@ -13,23 +15,29 @@ type TDirectoryProps = {
   session: Session;
 };
 
-export default function Directory({ session }: TDirectoryProps) {
+export default function Directory({}: TDirectoryProps) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [people, setPeople] = useState<TPeople[]>();
+  const [search, setSearch] = useDebounceValue('', 500);
 
   useEffect(() => {
     async function getPeople() {
-      const { data } = await supabase.from('profiles').select();
+      const { data } = await supabase
+        .from('profiles')
+        .select()
+        .ilike('public_email', `%${search}%`);
+
       setPeople(data as TPeople[]);
+
       if (data) setIsLoading(false);
     }
-    console.log(session);
+
     getPeople();
-  }, [session]);
+  }, [search]);
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
-      <div className="sm:flex sm:items-center">
+      <div className="sm:flex sm:items-center mb-8">
         <div className="sm:flex-auto">
           <h1 className="text-base font-semibold leading-6 text-gray-900">
             Users
@@ -40,10 +48,20 @@ export default function Directory({ session }: TDirectoryProps) {
           </p>
         </div>
       </div>
+      <input
+        onChange={(e) => {
+          setSearch(e.currentTarget.value);
+        }}
+        defaultValue={search}
+        id="search"
+        name="search"
+        placeholder="Search by email..."
+        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+      />
       {isLoading ? (
         <div>LOADING....</div>
       ) : (
-        <div className="mt-8 flow-root">
+        <div className="mt-2 flow-root">
           <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
               <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
