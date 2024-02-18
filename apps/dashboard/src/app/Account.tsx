@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react';
 export default function Account({ session }: { session: Session }) {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [publicEmail, setPublicEmail] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
@@ -17,6 +19,7 @@ export default function Account({ session }: { session: Session }) {
     } else {
       alert('UPDATED');
       setNewPassword('');
+      setConfirmPassword('');
     }
     setIsLoading(false);
   };
@@ -30,6 +33,7 @@ export default function Account({ session }: { session: Session }) {
       id: user.id,
       first_name: firstName,
       last_name: lastName,
+      public_email: publicEmail,
       updated_at: new Date(),
     };
 
@@ -51,7 +55,7 @@ export default function Account({ session }: { session: Session }) {
 
       const { data, error } = await supabase
         .from('profiles')
-        .select(`first_name, last_name`)
+        .select(`first_name, last_name, public_email`)
         .eq('id', user.id)
         .single();
 
@@ -62,6 +66,7 @@ export default function Account({ session }: { session: Session }) {
       } else if (data) {
         setFirstName(data.first_name);
         setLastName(data.last_name);
+        setPublicEmail(data.public_email);
       }
       setIsLoading(false);
     }
@@ -99,6 +104,7 @@ export default function Account({ session }: { session: Session }) {
                 </label>
                 <div className="mt-2">
                   <input
+                    required
                     type="text"
                     name="first-name"
                     id="first-name"
@@ -108,7 +114,7 @@ export default function Account({ session }: { session: Session }) {
                       setFirstName(e.currentTarget.value);
                     }}
                     className={
-                      'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 disabled:bg-gray-50 disabled:cursor-not-allowed disabled:animate-pulse'
+                      'disabled:text-gray-500 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 disabled:bg-gray-50 disabled:cursor-not-allowed disabled:animate-pulse'
                     }
                   />
                 </div>
@@ -123,6 +129,7 @@ export default function Account({ session }: { session: Session }) {
                 </label>
                 <div className="mt-2">
                   <input
+                    required
                     type="text"
                     name="last-name"
                     id="last-name"
@@ -131,12 +138,12 @@ export default function Account({ session }: { session: Session }) {
                     onChange={(e) => {
                       setLastName(e.currentTarget.value);
                     }}
-                    className="disabled:bg-gray-50 disabled:cursor-not-allowed disabled:animate-pulse block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className="disabled:text-gray-500 disabled:bg-gray-50 disabled:cursor-not-allowed disabled:animate-pulse block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
 
-              <div className="sm:col-span-4">
+              <div className="sm:col-span-3">
                 <label
                   htmlFor="email"
                   className="block text-sm font-medium leading-6 text-gray-900"
@@ -148,106 +155,34 @@ export default function Account({ session }: { session: Session }) {
                     id="email"
                     name="email"
                     type="email"
-                    autoComplete="email"
                     value={session.user.email}
                     disabled
-                    className="disabled:bg-gray-50 disabled:cursor-not-allowed block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className="disabled:text-gray-500 disabled:bg-gray-50 disabled:cursor-not-allowed block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
 
-              {/* <div className="sm:col-span-4">
+              <div className="sm:col-span-3">
                 <label
-                  htmlFor="country"
+                  htmlFor="public-email"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 >
-                  Country
-                </label>
-                <div className="mt-2">
-                  <select
-                    id="country"
-                    name="country"
-                    autoComplete="country-name"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                  >
-                    <option>United States</option>
-                    <option>Canada</option>
-                    <option>Mexico</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="col-span-full">
-                <label
-                  htmlFor="street-address"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Street address
+                  Public email address
                 </label>
                 <div className="mt-2">
                   <input
-                    type="text"
-                    name="street-address"
-                    id="street-address"
-                    autoComplete="street-address"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    id="public-email"
+                    name="public-email"
+                    type="email"
+                    value={publicEmail}
+                    disabled={isLoading}
+                    onChange={(e) => {
+                      setPublicEmail(e.currentTarget.value);
+                    }}
+                    className="disabled:text-gray-500 disabled:bg-gray-50 disabled:cursor-not-allowed disabled:animate-pulse block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
-
-              <div className="sm:col-span-2 sm:col-start-1">
-                <label
-                  htmlFor="city"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  City
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    name="city"
-                    id="city"
-                    autoComplete="address-level2"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-              </div>
-
-              <div className="sm:col-span-2">
-                <label
-                  htmlFor="region"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  State / Province
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    name="region"
-                    id="region"
-                    autoComplete="address-level1"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-              </div> */}
-
-              {/* <div className="sm:col-span-2">
-                <label
-                  htmlFor="postal-code"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  ZIP / Postal code
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    name="postal-code"
-                    id="postal-code"
-                    autoComplete="postal-code"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-              </div> */}
             </div>
           </div>
           <div className="flex items-center justify-end gap-x-6 border-t border-gray-900/10 px-4 py-4 sm:px-8">
@@ -275,28 +210,17 @@ export default function Account({ session }: { session: Session }) {
           className="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2"
           onSubmit={(e) => {
             e.preventDefault();
-            changePassword();
+            if (!newPassword || !confirmPassword) return;
+
+            if (newPassword === confirmPassword) {
+              changePassword();
+            } else {
+              alert('Passwords do not match');
+            }
           }}
         >
           <div className="px-4 py-6 sm:p-8">
             <div className="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8">
-              {/* <div>
-                <label
-                  htmlFor="current-password"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Current password
-                </label>
-                <div className="mt-2">
-                  <input
-                    id="current-password"
-                    name="current_password"
-                    type="password"
-                    autoComplete="current-password"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-              </div> */}
               <div>
                 <label
                   htmlFor="new-password"
@@ -309,16 +233,17 @@ export default function Account({ session }: { session: Session }) {
                     onChange={(e) => {
                       setNewPassword(e.currentTarget.value);
                     }}
+                    required
                     disabled={isLoading}
                     value={newPassword}
                     id="new-password"
                     name="new-password"
                     type="password"
-                    className="disabled:bg-gray-50 disabled:cursor-not-allowed disabled:animate-pulse block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className="disabled:text-gray-500 disabled:bg-gray-50 disabled:cursor-not-allowed disabled:animate-pulse block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
-              {/* <div>
+              <div>
                 <label
                   htmlFor="confirm-password"
                   className="block text-sm font-medium leading-6 text-gray-900"
@@ -327,14 +252,19 @@ export default function Account({ session }: { session: Session }) {
                 </label>
                 <div className="mt-2">
                   <input
+                    onChange={(e) => {
+                      setConfirmPassword(e.currentTarget.value);
+                    }}
+                    required
+                    disabled={isLoading}
+                    value={confirmPassword}
                     id="confirm-password"
-                    name="confirm_password"
+                    name="confirm-password"
                     type="password"
-                    autoComplete="confirm-password"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className="disabled:text-gray-500 disabled:bg-gray-50 disabled:cursor-not-allowed disabled:animate-pulse block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
-              </div> */}
+              </div>
             </div>
           </div>
           <div className="flex items-center justify-end gap-x-6 border-t border-gray-900/10 px-4 py-4 sm:px-8">
